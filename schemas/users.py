@@ -18,3 +18,6 @@ class UserCreateSchema(BaseModel):
     phone_number: str
     telegram_id: int
 
+
+class RefreshTokenSchema(BaseModel):
+    refresh_token: str

@@ -19,6 +19,8 @@ class Config(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRES: int
     JWT_ALGORITHM: str
 
+    SESSIONMIDDLEWARE: str
+
     @property
     def postgres_async_url(self):
         return (f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:"

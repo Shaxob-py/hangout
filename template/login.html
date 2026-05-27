@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block header %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+<div class="container-tight py-5">
+    {% if login_logo_url or logo_url %}
+    <div class="text-center mb-4">
+        <a href="." class="navbar-brand navbar-brand-autodark">
+            <img src="{{ login_logo_url or logo_url }}" height="50" alt="Logo"/>
+        </a>
+    </div>
+    {% endif %}
+
+    <form class="card shadow-lg border-0 rounded-3" action="{{ request.url }}" method="POST" id="loginForm">
+        {# <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/> #}
+        {# <input type="hidden" name="gorilla.csrf.Token" value="{{ csrf_token }}"/> #}
+
+        <div class="card-body p-4">
+            <h2 class="card-title text-center mb-4 fw-bold">Trip agent ✈</h2>
+
+            {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="ti ti-alert-circle me-2"></i> {{ error }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label" for="phone">{{ _("Phone Number") }}</label>
+                <input type="tel"
+                       name="username"
+                       id="phone"
+                       class="form-control {% if form_errors and form_errors.has('phone_number') %}is-invalid{% endif %}"
+                       autocomplete="tel"
+                       inputmode="tel"
+                       required
+                />
+                {% if form_errors and form_errors.has('phone_number') %}
+                <div class="invalid-feedback">{{ form_errors.msg('phone_number') }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">{{ _("Password") }}</label>
+                <input type="password"
+                       name="password"
+                       class="form-control {% if form_errors and form_errors.has('password') %}is-invalid{% endif %}"
+                       placeholder="********"
+                       autocomplete="current-password"
+                       required
+                />
+                {% if form_errors and form_errors.has('password') %}
+                <div class="invalid-feedback">{{ form_errors.msg('password') }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3 form-check">
+                <input name="remember_me" type="checkbox" class="form-check-input" id="rememberMe"/>
+                <label class="form-check-label" for="rememberMe">{{ _("Remember me") }}</label>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="ti ti-login me-1"></i> {{ _("Sign in") }}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+<script>
+    jQuery(document).ready(function ($) {
+        // 1. Инициализация маски для Узбекистана (+998)
+        $('#phone').inputmask({
+            "mask": "+\\9\\98(99) 999-99-99",
+            "clearIncomplete": true // Очистит поле, если пользователь ввёл номер не до конца
+        });
+
+        // 2. Безопасная обработка отправки формы
+        $('#loginForm').on('submit', function (event) {
+            // Предотвращаем стандартную отправку, чтобы успеть очистить данные
+            event.preventDefault();
+
+            var phoneInput = $('#phone').val();
+
+            // Удаляем маску: оставляем только чистые цифры (например: 998991234567)
+            var cleanPhone = phoneInput.replace(/\D/g, '');
+
+            if (cleanPhone.length === 12) {
+                // Временно отключаем маску, чтобы она не вернула старый формат при изменении значения
+                $('#phone').inputmask('remove');
+
+                // Записываем чистые цифры прямо в существующее поле username
+                $('#phone').val(cleanPhone);
+
+                // Отправляем форму напрямую через нативный DOM-метод (это обходит триггер jQuery submit и не вызывает вечный цикл)
+                this.submit();
+            } else {
+                alert('Пожалуйста, введите полный номер телефона.');
+            }
+        });
+    });
+</script>
+{% endblock %}

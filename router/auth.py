@@ -4,9 +4,9 @@ from starlette import status
 
 from database.user import User
 from schemas.base import ResponseWrapper
-from schemas.users import UserLoginSchema, UserVerSchema, TokenSchema
+from schemas.users import UserLoginSchema, UserVerSchema, TokenSchema , RefreshTokenSchema
 from services.otp import OTPService, generate_code
-from utils.jwt import create_access_token, create_refresh_token
+from utils.jwt import create_access_token, create_refresh_token, verify_refresh_token
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -49,13 +49,12 @@ async def verify_code_view(data: UserVerSchema, service: OTPService = Depends(ot
         status_code=status.HTTP_200_OK)
 
 
-@auth_router.post('/refresh-token', response_model=ResponseWrapper)
-async def refresh_token(payload: RefreshTokenSchema):  # noqa
-    user_uuid = verify_refresh_token(refresh_token)  # noqa
+
+@auth_router.post('/refresh-token')
+async def refresh_token(payload: RefreshTokenSchema):
+    user_uuid = verify_refresh_token(refresh_token)
     new_access_token = create_access_token({'sub': str(user_uuid)})
-    return ResponseWrapper(
-        data={
-            "access_token": new_access_token,
-            "refresh_token": refresh_token,
-        }, message='success',
-        status_code=status.HTTP_200_OK)
+    return {
+        "access_token": new_access_token,
+        "refresh_token": refresh_token,
+    }
