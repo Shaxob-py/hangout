@@ -1,10 +1,12 @@
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
-
+from aiogram import Bot
 from admin import admin
 from database.base import db
+from my_bot.main import dp
 from root.config import settings
 from router import router
 
@@ -13,6 +15,9 @@ from router import router
 async def lifespan(_app: FastAPI):
     await db.create_all()
     admin.mount_to(app)
+    bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
+
+    bot_task = asyncio.create_task(dp.start_polling(bot))
     print('Project ishga tushdi ')
     yield
     print('Project toxtadi ')
