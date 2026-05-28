@@ -66,6 +66,7 @@ class AbstractClass:
         except Exception as e:
             print(e)
             await db.rollback()
+            raise
 
     @classmethod
     async def create(cls, **kwargs):  # Create

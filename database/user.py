@@ -24,7 +24,7 @@ class User(CreatedModel):
     )
     phone: Mapped[str] = mapped_column(String(15), unique=True)
     telegram_id: Mapped[str] = mapped_column(BigInteger)
-    password: Mapped[str] = mapped_column(String(50), nullable=True)
+    password: Mapped[str] = mapped_column(String(200), nullable=True)
 
     participants: Mapped[list["EventParticipant"]] = relationship("EventParticipant", back_populates="user")
 

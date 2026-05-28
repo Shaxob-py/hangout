@@ -18,7 +18,7 @@ async def create_superuser():
         return
 
     await User.create(
-        phone_number=phone_number,
+        phone=phone_number,
         username="superuser",
         telegram_id=543451,
         password=User.get_password_hash(password),

@@ -10,6 +10,7 @@ class UserModelView(ModelView):
         StringField("phone", label="Phone"),
         IntegerField("telegram_id", label="Telegram ID"),
         EnumField("role", enum=User.Role, label="Role"),
+        StringField("password", label="Password"),
     ]
 
     label = 'Userlar'
@@ -35,19 +36,17 @@ class UserModelView(ModelView):
 
 
 class AdminModelView(ModelView):
-    # ИСПРАВЛЕНО: Явно объявляем объекты полей, как и в UserModelView,
-    # используя правильное имя колонки "phone"
     fields = [
         IntegerField("id", label="ID", read_only=True),  # id обычно делают только для чтения
         StringField("username", label="Username"),
         StringField("phone", label="Phone"),
         IntegerField("telegram_id", label="Telegram ID"),
         EnumField("role", enum=User.Role, label="Role"),
+        StringField("password", label="Password"),
     ]
 
     label = 'Adminlar'
     identity = 'admins'
-    exclude_fields_from_list = ["password"]
     searchable_fields = ["username", "phone"]
 
     def get_list_query(self, request):

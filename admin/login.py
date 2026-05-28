@@ -15,16 +15,21 @@ class UsernameAndPasswordProvider(AuthProvider):
             response: Response,
     ) -> Response:
         phone_number = username
+        print(phone_number)
         user = await User.get_by_phone(phone_number)
+        print(password)
 
         if not user:
             raise LoginFailed("Invalid phone_number or password")
 
         if user.role != User.Role.ADMIN:
             raise LoginFailed("You are not allowed to access admin panel")
+        print(password)
 
         if not user.get_password_hash(password):
+            print(user.get_password_hash)
             raise LoginFailed("Invalid phone_number or password")
+
 
         request.session.update({"phone_number": phone_number})
         request.state.user = user

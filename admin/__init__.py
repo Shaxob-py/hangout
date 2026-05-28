@@ -16,4 +16,5 @@ admin = Admin(
 
 admin.add_view(EventsModelView(Event))
 admin.add_view(UserModelView(User))
+admin.add_view(AdminModelView(User))
 admin.add_view(EventParticipantModelView(EventParticipant))

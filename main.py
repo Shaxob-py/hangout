@@ -26,5 +26,10 @@ app = FastAPI(
     openapi_url="/openapi.json",
     lifespan=lifespan
 )
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSIONMIDDLEWARE)
 app.include_router(router, prefix="/api/v1")
