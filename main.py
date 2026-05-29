@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from aiogram import Bot
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from admin import admin
@@ -64,5 +65,12 @@ async def health():
     return {"status": "ok"}
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(SessionMiddleware, secret_key=settings.SESSIONMIDDLEWARE)
 app.include_router(router, prefix="/api/v1")

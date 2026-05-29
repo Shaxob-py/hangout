@@ -19,6 +19,7 @@ class EventOut(BaseModel):
 
 
 
+
 class EventListResponse(BaseModel):
     items: list[EventOut]
     next_cursor: Optional[str] = None

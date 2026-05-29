@@ -74,9 +74,10 @@ class Event(CreatedModel):
         return len(row) <= 3
 
     @classmethod
-    async def get_my_events(cls, user_id: UUID) -> List:
-        query = (select(cls)).where(cls.owner_id == user_id and cls.is_active == True)
-        return await db.execute(query)
+    async def get_my_events(cls, user_id: UUID) -> List["Event"]:
+        query = select(cls).where(cls.owner_id == user_id, cls.is_active.is_(True))
+        result = await db.execute(query)
+        return result.scalars().all()
 
     @classmethod
     async def get_events(cls, event_id: UUID):
@@ -112,7 +113,8 @@ class EventParticipant(CreatedModel):
             .join(cls, cls.event_id == Event.id)
             .where(
                 cls.user_id == user_id,
-                Event.is_active == True
+                cls.is_active.is_(True),
+                Event.is_active.is_(True),
             )
         )
 

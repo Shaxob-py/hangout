@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
@@ -8,7 +8,13 @@ from starlette.status import HTTP_400_BAD_REQUEST
 
 from database import Event, EventParticipant, User
 from schemas.base import ResponseWrapper
-from schemas.event import EventCreateSchema, EventDetailSchema, EventUpdateSchema, EventListResponse
+from schemas.event import (
+    EventCreateSchema,
+    EventDetailSchema,
+    EventOut,
+    EventUpdateSchema,
+    EventListResponse,
+)
 from utils.jwt import get_current_user
 
 event_router = APIRouter(tags=["event"])
@@ -95,17 +101,14 @@ async def update_event_view(event_id: UUID, data: EventUpdateSchema, cur_user=De
         status_code=status.HTTP_200_OK)
 
 
-@event_router.get("/my_events", response_model=ResponseWrapper[EventDetailSchema])
+@event_router.get("/my_events", response_model=ResponseWrapper[List[EventOut]])
 async def get_my_event_view(cur_user=Depends(get_current_user)):
-    event = await Event.get_my_events(cur_user.id)
+    events = await Event.get_my_events(cur_user.id)
 
-    if event is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
-
-    return ResponseWrapper[EventDetailSchema](
-        message=f'Event "{get_current_user.id}" was found',
-        data=event,
-        status_code=status.HTTP_200_OK
+    return ResponseWrapper[List[EventOut]](
+        message=f"Found {len(events)} event(s)",
+        data=events,
+        status_code=status.HTTP_200_OK,
     )
 
 
@@ -122,22 +125,23 @@ async def delete_event_view(event_id: UUID, cur_user=Depends(get_current_user)):
         'status_code': status.HTTP_204_NO_CONTENT}
 
 
-@event_router.get("/joined_events", response_model=ResponseWrapper[EventDetailSchema])
+@event_router.get("/joined_events", response_model=ResponseWrapper[List[EventOut]])
 async def get_my_joined_event_view(cur_user=Depends(get_current_user)):
-    event = await EventParticipant.get_joined_events(cur_user.id)
+    events = await EventParticipant.get_joined_events(cur_user.id)
 
-    if event is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
-
-    return ResponseWrapper[EventDetailSchema](
-        message=f'Event "{cur_user.id}" was found',
-        data=event,
-        status_code=status.HTTP_200_OK)
+    return ResponseWrapper[List[EventOut]](
+        message=f"Found {len(events)} joined event(s)",
+        data=events,
+        status_code=status.HTTP_200_OK,
+    )
 
 
 @event_router.post("/event/join/{event_id}", response_model=ResponseWrapper)
 async def join_event_view(event_id: UUID, cur_user=Depends(get_current_user)):
     event_data = await Event.get_events(event_id)
+
+    if event_data.owner_id == cur_user.id:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="You cannot join this event.")
 
     if event_data is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
