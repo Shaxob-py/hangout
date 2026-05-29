@@ -40,7 +40,8 @@ async def verify_code_view(data: UserVerSchema, service: OTPService = Depends(ot
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     access_token = create_access_token({"sub": str(user.id)})
-    return ResponseWrapper(
+    refresh_token = create_refresh_token({"sub": str(user.id)})
+    return ResponseWrapper[TokenSchema](
         message='success',
         data={
             "access_token": access_token,
@@ -50,9 +51,10 @@ async def verify_code_view(data: UserVerSchema, service: OTPService = Depends(ot
 
 
 
-@auth_router.post('/refresh-token')
-async def refresh_token(payload: RefreshTokenSchema):
-    user_uuid = verify_refresh_token(refresh_token)
+
+@auth_router.post('/refresh-token', response_model=RefreshTokenSchema)
+async def refresh_token(payload: RefreshTokenSchema):  # noqa
+    user_uuid = verify_refresh_token(refresh_token)  # noqa
     new_access_token = create_access_token({'sub': str(user_uuid)})
     return {
         "access_token": new_access_token,

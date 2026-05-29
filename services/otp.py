@@ -41,9 +41,6 @@ class OTPService:
 
         cached_code = cached_code.decode()
 
-        print(cached_code == code)
-
-        print(type(code))
 
         return int(cached_code) == code
 

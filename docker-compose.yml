@@ -1,38 +1,38 @@
 services:
-#  db:
-#    image: postgres:15-alpine
-#    env_file: .env
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.50'
-#          memory: 512M
+  db:
+    image: postgres:15-alpine
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
 
-#  redis_container:
-#    image: redis:7-alpine
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "redis-cli", "ping" ]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '0.25'
-#          memory: 256M
+  redis_container:
+    image: redis:7-alpine
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
   app:
     build: .
@@ -42,7 +42,7 @@ services:
     restart: always
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy                  # ← ждём готовности
       redis_container:
         condition: service_healthy
     env_file: .env
