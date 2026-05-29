@@ -6,12 +6,14 @@ from admin.event import EventsModelView
 from admin.users import UserModelView, AdminModelView
 from database import User, EventParticipant, Event
 from database.base import db
+from root.config import settings
 
 admin = Admin(
     engine=db.engine,
     title="Trip",
     templates_dir="template",
-    auth_provider=UsernameAndPasswordProvider()
+    auth_provider=UsernameAndPasswordProvider(),
+    base_url=settings.SECRETE_ADMIN_URL
 )
 
 admin.add_view(EventsModelView(Event))

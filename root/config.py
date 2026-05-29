@@ -19,6 +19,10 @@ class Config(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRES: int
     JWT_ALGORITHM: str
 
+    ADMIN_PASSWORD: str
+
+    SECRETE_ADMIN_URL: str
+
     SESSIONMIDDLEWARE: str
 
     @property
