@@ -20,10 +20,15 @@ class Config(BaseSettings):
     JWT_ALGORITHM: str
 
     ADMIN_PASSWORD: str
+    ADMIN_TELEGRAM_ID: int
+    ADMIN_PHONE:str
 
     SECRETE_ADMIN_URL: str
 
     SESSIONMIDDLEWARE: str
+
+
+
 
     @property
     def postgres_async_url(self):

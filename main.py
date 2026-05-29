@@ -11,6 +11,7 @@ from database.base import db
 from my_bot.main import dp
 from root.config import settings
 from router import router
+from utils.utils import get_password_hash
 
 
 @asynccontextmanager
@@ -20,9 +21,17 @@ async def lifespan(_app: FastAPI):
     if user is None:
         await User.create(
             username="admin",
-            password=settings.ADMIN_PASSWORD,
+            password=get_password_hash(settings.ADMIN_PASSWORD),
             phone=settings.ADMIN_PHONE,
-            role=User.ROLE_ADMIN,
+            role=User.Role.ADMIN,
+            telegram_id=settings.ADMIN_TELEGRAM_ID,
+        )
+    elif user.role == User.Role.ADMIN and (
+        not user.password or not user.password.startswith("$argon2")
+    ):
+        await User.update(
+            user.id,
+            password=get_password_hash(user.password or settings.ADMIN_PASSWORD),
         )
     bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
 

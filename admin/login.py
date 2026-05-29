@@ -4,6 +4,8 @@ from starlette_admin.auth import AdminConfig, AdminUser, AuthProvider
 from starlette_admin.exceptions import LoginFailed
 
 from database import User
+from utils.utils import verify_password
+
 
 class UsernameAndPasswordProvider(AuthProvider):
     async def login(
@@ -15,21 +17,16 @@ class UsernameAndPasswordProvider(AuthProvider):
             response: Response,
     ) -> Response:
         phone_number = username
-        print(phone_number)
         user = await User.get_by_phone(phone_number)
-        print(password)
 
         if not user:
             raise LoginFailed("Invalid phone_number or password")
 
         if user.role != User.Role.ADMIN:
             raise LoginFailed("You are not allowed to access admin panel")
-        print(password)
 
-        if not user.get_password_hash(password):
-            print(user.get_password_hash)
+        if not user.password or not verify_password(password, user.password):
             raise LoginFailed("Invalid phone_number or password")
-
 
         request.session.update({"phone_number": phone_number})
         request.state.user = user
@@ -41,7 +38,7 @@ class UsernameAndPasswordProvider(AuthProvider):
             return False
 
         user = await User.get_by_phone(phone_number)
-        if not user:
+        if not user or user.role != User.Role.ADMIN:
             return False
 
         request.state.user = user

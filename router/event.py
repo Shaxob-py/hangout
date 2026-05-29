@@ -51,10 +51,10 @@ async def create_event_view(data: EventCreateSchema, cur_user=Depends(get_curren
 async def detail_event_view(event_id: UUID):
     event = await Event.get(event_id)
 
-    user = await User.get(event.owner_id)
-
     if not event:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+
+    user = await User.get(event.owner_id)
     joined_users = await EventParticipant.count_joined_users(event_id)
 
     event_detail = (

@@ -16,7 +16,6 @@ class OTPService:
         text = f"Sizni kodingiz {code} 🔑"
         payload = {"chat_id": telegram_id, "text": text}
 
-
         async with httpx.AsyncClient() as client:
             response = await client.post(url, data=payload)
             if response.status_code != 200:
@@ -35,12 +34,10 @@ class OTPService:
 
     async def verify_otp(self, phone, code: int) -> bool:
         cached_code = self.redis_client.get(phone)
-        print((cached_code))
         if not code or cached_code is None:
             return False
 
         cached_code = cached_code.decode()
-
 
         return int(cached_code) == code
 
