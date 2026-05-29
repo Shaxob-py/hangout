@@ -15,7 +15,7 @@ class OTPService:
         url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
         text = f"Sizni kodingiz {code} 🔑"
         payload = {"chat_id": telegram_id, "text": text}
-        print(code)
+
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, data=payload)
