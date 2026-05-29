@@ -140,9 +140,6 @@ async def get_my_joined_event_view(cur_user=Depends(get_current_user)):
 async def join_event_view(event_id: UUID, cur_user=Depends(get_current_user)):
     event_data = await Event.get_events(event_id)
 
-    if event_data.owner_id == cur_user.id:
-        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="You cannot join this event.")
-
     if event_data is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
 
