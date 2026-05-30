@@ -10,13 +10,13 @@ from root.config import settings
 
 admin = Admin(
     engine=db.engine,
-    title="Trip",
+    title="hangout",
     templates_dir="template",
     auth_provider=UsernameAndPasswordProvider(),
     base_url=settings.SECRETE_ADMIN_URL
 )
 
-admin.add_view(EventsModelView(Event))
 admin.add_view(UserModelView(User))
 admin.add_view(AdminModelView(User))
+admin.add_view(EventsModelView(Event))
 admin.add_view(EventParticipantModelView(EventParticipant))
