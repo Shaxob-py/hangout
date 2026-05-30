@@ -53,7 +53,7 @@ app = FastAPI(
     title="User Service API",
     description="For Effective Mobile",
     version="0.1.0",
-    docs_url="/",
+    docs_url=None,
     openapi_url="/openapi.json",
     lifespan=lifespan
 )
