@@ -35,12 +35,3 @@ async def command_contact_handler(message: Message) -> None:
     await message.answer("login qilishingiz mumkun  ✅")
 
 
-# Run the bot
-# async def main() -> None:
-#     bot = Bot(token=settings.TELEGRAM_BOT_TOKEN)
-#
-#     await dp.start_polling(bot)
-#
-#
-# if __name__ == "__main__":
-#     asyncio.run(main())

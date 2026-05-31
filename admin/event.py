@@ -11,7 +11,6 @@ class EventsModelView(ModelView):
         StringField("name", label="Name", help_text="togri yoz"),
         StringField("description", label="Description"),
         IntegerField("owner_id", label="Owner id"),
-        EnumField("role", enum=User.Role, label="Role"),
         StringField("location", label="Location"),
         DateTimeField("date_event", label="Date Event"),
     ]
