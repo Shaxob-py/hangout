@@ -1,4 +1,4 @@
-from starlette_admin import IntegerField, EnumField, StringField , UUIDField
+from starlette_admin import IntegerField, EnumField, StringField
 from starlette_admin.contrib.sqla import ModelView
 
 from database import User
@@ -6,7 +6,7 @@ from database import User
 
 class UserModelView(ModelView):
     fields = [
-        UUIDField("id", label="ID"),
+        StringField("id", label="ID"),
         StringField("username", label="Username", help_text="togri yoz"),
         StringField("phone", label="Phone"),
         IntegerField("telegram_id", label="Telegram ID"),
