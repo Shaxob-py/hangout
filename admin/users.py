@@ -6,7 +6,7 @@ from database import User
 
 class UserModelView(ModelView):
     fields = [
-        UUIDField("id", label="ID")
+        UUIDField("id", label="ID"),
         StringField("username", label="Username", help_text="togri yoz"),
         StringField("phone", label="Phone"),
         IntegerField("telegram_id", label="Telegram ID"),
